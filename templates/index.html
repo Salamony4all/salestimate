@@ -1,0 +1,276 @@
+
+<!doctype html>
+<title>PDF Table Processor</title>
+<style>
+    body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 900px; margin: auto; }
+    .card { border: 1px solid #ccc; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h1, h2, h3 { color: #333; }
+    hr { margin: 30px 0; }
+    input[type=file] { margin-bottom: 10px; }
+    button, input[type=submit] { background-color: #007BFF; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+    button:hover, input[type=submit]:hover { background-color: #0056b3; }
+    .thumbnail-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+    .thumbnail-wrapper { position: relative; display: inline-block; }
+    .thumbnail-wrapper img { width: 150px; height: auto; border: 2px solid #ddd; cursor: pointer; transition: transform 0.2s; display: block; }
+    .thumbnail-wrapper img:hover { transform: scale(1.05); border-color: #007BFF; }
+    .thumbnail-wrapper .remove-btn { position: absolute; top: 2px; right: 2px; background-color: rgba(255, 0, 0, 0.8); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 14px; line-height: 22px; text-align: center; cursor: pointer; display: none; }
+    .thumbnail-wrapper:hover .remove-btn { display: block; }
+    #add-files-btn { font-size: 24px; font-weight: bold; width: 50px; height: 50px; line-height: 50px; text-align: center; padding: 0; }
+    #preview-container img, #result-container img { max-width: 100%; height: auto; }
+    .spinner { display: none; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin-left: 10px; vertical-align: middle; }
+    .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
+<h1>PDF Table Processor</h1>
+
+<div class="card">
+    <h2>1. Select PDF File</h2>
+    <input type="file" name="file" id="file" required accept="application/pdf">
+    <hr>
+    
+    <h2>2. Choose Local Processing Method</h2>
+    <button type="button" id="extract-btn">Extract & Crop Tables</button>
+    <button type="button" id="preview-btn">Stitch & Preview Tables</button>
+    <div class="spinner" id="loading-spinner"></div>
+</div>
+
+<div id="extract-section" class="card" style="display:none;">
+    <h2>Extracted Tables</h2>
+    <p>Tables found on each page have been cropped individually. Hover to remove, click to enlarge.</p>
+    <div id="extract-thumbnails" class="thumbnail-container">
+        <button type="button" id="add-files-btn" title="Add more files">+</button>
+        <input type="file" id="add-files-input" multiple accept="image/*" style="display:none;">
+    </div>
+</div>
+
+<div id="preview-section" class="card" style="display:none;">
+    <h2>Stitched Table Preview</h2>
+    <div id="preview-container"></div>
+    <button type="button" id="crop-stitched-btn">Crop Components from Preview</button>
+    <h3>Cropped Components:</h3>
+    <div id="preview-cropped-thumbnails" class="thumbnail-container"></div>
+</div>
+
+<hr>
+
+<form id="upload-form" enctype="multipart/form-data">
+    <div class="card">
+        <!-- Fine-tuning options are restored here -->
+        <h2>3. Upload to API for Full Analysis</h2>
+        <p>Review the fine-tuning options and submit for final processing.</p>
+        <h3>Fine-tuning Options:</h3>
+        <div class="options-grid">
+            <div>
+                <input type="checkbox" id="useTableRecognition" name="useTableRecognition" value="true" checked>
+                <label for="useTableRecognition">Table Recognition</label>
+            </div>
+            <div>
+                <input type="checkbox" id="useRegionDetection" name="useRegionDetection" value="true">
+                <label for="useRegionDetection">Region Detection</label>
+            </div>
+            <div>
+                <input type="checkbox" id="useDocOrientationClassify" name="useDocOrientationClassify" value="true">
+                <label for="useDocOrientationClassify">Doc Orientation Classify</label>
+            </div>
+            <div>
+                <input type="checkbox" id="useDocUnwarping" name="useDocUnwarping" value="true">
+                <label for="useDocUnwarping">Doc Unwarping</label>
+            </div>
+            <div>
+                <input type="checkbox" id="useTextlineOrientation" name="useTextlineOrientation" value="true">
+                <label for="useTextlineOrientation">Textline Orientation</label>
+            </div>
+            <div>
+                <input type="checkbox" id="useSealRecognition" name="useSealRecognition" value="true">
+                <label for="useSealRecognition">Seal Recognition</label>
+            </div>
+            <div>
+                <input type="checkbox" id="useFormulaRecognition" name="useFormulaRecognition" value="true">
+                <label for="useFormulaRecognition">Formula Recognition</label>
+            </div>
+            <div>
+                <input type="checkbox" id="useChartRecognition" name="useChartRecognition" value="true">
+                <label for="useChartRecognition">Chart Recognition</label>
+            </div>
+        </div>
+        <br>
+        <input type="submit" value="Upload and Process">
+        <div class="spinner" id="upload-spinner"></div>
+    </div>
+</form>
+
+<div id="result-section" class="card" style="display:none;">
+    <h2>Layout Parsing Result</h2>
+    <div id="result-container"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.getElementById('file');
+    const extractBtn = document.getElementById('extract-btn');
+    const previewBtn = document.getElementById('preview-btn');
+    const uploadForm = document.getElementById('upload-form');
+
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const uploadSpinner = document.getElementById('upload-spinner');
+
+    const extractSection = document.getElementById('extract-section');
+    const extractThumbnails = document.getElementById('extract-thumbnails');
+    const addFilesBtn = document.getElementById('add-files-btn');
+    const addFilesInput = document.getElementById('add-files-input');
+    
+    const previewSection = document.getElementById('preview-section');
+    const previewContainer = document.getElementById('preview-container');
+    const cropStitchedBtn = document.getElementById('crop-stitched-btn');
+    const previewCroppedThumbnails = document.getElementById('preview-cropped-thumbnails');
+
+    const resultSection = document.getElementById('result-section');
+    const resultContainer = document.getElementById('result-container');
+    
+    let previewData = {};
+
+    function showAlert(message) { alert(message); }
+    function showSpinner(spinner) { spinner.style.display = 'inline-block'; }
+    function hideSpinner(spinner) { spinner.style.display = 'none'; }
+
+    function createThumbnail(imgData, container) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'thumbnail-wrapper';
+
+        const img = document.createElement('img');
+        img.src = imgData;
+        img.onclick = () => { /* Enlarge functionality */ };
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '&times;';
+
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            wrapper.remove();
+        });
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(removeBtn);
+        container.insertBefore(wrapper, addFilesBtn);
+    }
+
+    addFilesBtn.addEventListener('click', () => addFilesInput.click());
+    addFilesInput.addEventListener('change', (event) => {
+        for (const file of event.target.files) {
+            const reader = new FileReader();
+            reader.onload = (e) => createThumbnail(e.target.result, extractThumbnails);
+            reader.readAsDataURL(file);
+        }
+    });
+
+    extractBtn.addEventListener('click', async () => {
+        if (!fileInput.files.length) return showAlert('Please select a PDF file first.');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        showSpinner(loadingSpinner);
+        extractSection.style.display = 'none';
+        previewSection.style.display = 'none';
+
+        try {
+            const response = await fetch('/extract_tables', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (response.ok && data.cropped_images && data.cropped_images.length > 0) {
+                extractThumbnails.innerHTML = ''; // Clear previous
+                 extractThumbnails.appendChild(addFilesBtn);
+                data.cropped_images.forEach(imgData => createThumbnail(imgData, extractThumbnails));
+                extractSection.style.display = 'block';
+            } else {
+                showAlert(data.error || 'No tables were found to extract.');
+            }
+        } catch (error) {
+            showAlert('An unexpected error occurred during table extraction.');
+        } finally {
+            hideSpinner(loadingSpinner);
+        }
+    });
+
+    // ... rest of the script remains the same ...
+     previewBtn.addEventListener('click', async () => {
+        if (!fileInput.files.length) return showAlert('Please select a PDF file first.');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        showSpinner(loadingSpinner);
+        previewSection.style.display = 'none';
+        extractSection.style.display = 'none';
+
+        try {
+            const response = await fetch('/preview', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (response.ok) {
+                previewData = data;
+                previewContainer.innerHTML = `<img src="${data.image_data}" alt="Stitched Table Preview">`;
+                previewSection.style.display = 'block';
+                previewCroppedThumbnails.innerHTML = '';
+            } else {
+                showAlert(data.error || 'An error occurred during preview.');
+            }
+        } catch (error) {
+            showAlert('An unexpected error occurred during preview.');
+        } finally {
+            hideSpinner(loadingSpinner);
+        }
+    });
+
+    cropStitchedBtn.addEventListener('click', async () => {
+        if (!previewData.image_data || !previewData.table_coordinates) return showAlert('No stitched preview data to crop.');
+
+        const formData = new URLSearchParams();
+        formData.append('imageData', previewData.image_data);
+        formData.append('tableCoordinates', JSON.stringify(previewData.table_coordinates));
+
+        try {
+            const response = await fetch('/crop_table', { method: 'POST', body: formData });
+            const data = await response.json();
+            if (response.ok) {
+                previewCroppedThumbnails.innerHTML = '';
+                data.cropped_images.forEach(imgData => createThumbnail(imgData, previewCroppedThumbnails));
+            } else {
+                showAlert(data.error || 'Error during cropping.');
+            }
+        } catch (error) {
+            showAlert('An unexpected error occurred during cropping.');
+        }
+    });
+
+    uploadForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!fileInput.files.length) return showAlert('Please select a file to upload.');
+        
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        document.querySelectorAll('#upload-form input[type=checkbox]:checked').forEach(cb => {
+            formData.append(cb.name, cb.value);
+        });
+
+        showSpinner(uploadSpinner);
+        resultSection.style.display = 'none';
+
+        try {
+            const response = await fetch('/upload', { method: 'POST', body: formData });
+            const data = await response.json();
+            if (response.ok) {
+                let html = data.layoutParsingResults.map(res => `<h3>Document</h3><div>${res.markdown.text}</div>`).join('');
+                resultContainer.innerHTML = html;
+                resultSection.style.display = 'block';
+            } else {
+                showAlert(data.error || 'An error occurred during processing.');
+            }
+        } catch (error) {
+            showAlert('An unexpected error occurred during processing.');
+        } finally {
+            hideSpinner(uploadSpinner);
+        }
+    });
+});
+</script>
