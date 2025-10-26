@@ -1,243 +1,359 @@
-
 <!doctype html>
-<title>PDF Processor</title>
-<style>
-    body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 1200px; margin: auto; }
-    .card { border: 1px solid #ccc; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    h1, h2, h3 { color: #333; }
-    input[type=file], input[type=checkbox] { margin-bottom: 10px; }
-    button { background-color: #007BFF; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
-    .thumbnail-container { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
-    .thumbnail-wrapper { text-align: center; cursor: pointer; padding: 5px; border: 2px solid #ddd; transition: border-color 0.2s; }
-    .thumbnail-wrapper.selected { border-color: #007BFF; }
-    .thumbnail-wrapper img { max-width: 200px; height: auto; }
-    .thumbnail-wrapper p { margin-top: 5px; font-size: 14px; color: #555; }
-    .spinner { display: none; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin-left: 20px; vertical-align: middle; }
-    .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px;}
-    #table-result-preview { border: 1px solid #ccc; padding: 10px; margin-top: 10px; overflow-x: auto; }
-    #table-result-preview table { border-collapse: collapse; width: 100%; }
-    #table-result-preview th, #table-result-preview td { border: 1px solid #ddd; padding: 8px; }
-    #progress-container { display: none; margin-top: 20px; }
-    #progress-bar { width: 0%; height: 20px; background-color: #4CAF50; text-align: center; line-height: 20px; color: white; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-</style>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF Processor Pro</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .thumbnail-wrapper {
+            text-align: center;
+            cursor: pointer;
+            padding: 8px;
+            border: 2px solid #dee2e6;
+            border-radius: .375rem;
+            transition: border-color 0.2s;
+            position: relative; /* For checkbox positioning */
+        }
+        .thumbnail-wrapper.selected {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, .25);
+        }
+        .thumbnail-wrapper img {
+            max-width: 200px;
+            height: auto;
+            border-radius: .25rem;
+        }
+        .thumbnail-wrapper .page-checkbox {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+        .thumbnail-wrapper p {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1>PDF Processor Pro</h1>
+            <p class="lead">From Complex PDFs to Actionable Data</p>
+        </div>
 
-<h1>PDF Processor</h1>
+        <!-- Step 1: Upload and Convert -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex align-items-center">
+                <span class="badge bg-primary rounded-pill me-3">1</span>
+                <h5 class="mb-0">Convert PDF to Images</h5>
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <input type="file" class="form-control" name="file" id="pdf-file" required accept="application/pdf">
+                    <button class="btn btn-primary" type="button" id="convert-btn">Convert</button>
+                    <div class="spinner-border text-primary ms-3" role="status" id="pdf-spinner" style="display:none;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<div class="card">
-    <h2>1. Convert PDF to Images</h2>
-    <input type="file" name="file" id="pdf-file" required accept="application/pdf">
-    <button type="button" id="convert-btn">Convert</button>
-    <div class="spinner" id="pdf-spinner"></div>
-</div>
+        <!-- Step 2: Select Pages and Options -->
+        <div id="image-results-card" class="card shadow-sm mb-4" style="display:none;">
+            <div class="card-header d-flex align-items-center">
+                <span class="badge bg-primary rounded-pill me-3">2</span>
+                <h5 class="mb-0">Select Pages & Extraction Options</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="select-all-pages">
+                    <label class="form-check-label" for="select-all-pages">Select All Pages</label>
+                </div>
+                <div id="thumbnail-container"></div>
+            </div>
+            <div class="card-footer">
+                <h6 class="mb-3">Fine-Tuning Options</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" name="useTableRecognition" id="useTableRecognition" checked>
+                            <label class="form-check-label" for="useTableRecognition">Recognize Tables</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="useDocUnwarping" id="useDocUnwarping">
+                            <label class="form-check-label" for="useDocUnwarping">Correct Image Distortion</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="htmlConversion" id="wired" value="useWiredTableCellsTransToHtml" checked>
+                            <label class="form-check-label" for="wired">Wired Table to HTML</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="htmlConversion" id="borderless" value="useWirelessTableCellsTransToHtml">
+                            <label class="form-check-label" for="borderless">Borderless Table to HTML</label>
+                        </div>
+                    </div>
+                </div>
+                 <button type="button" id="extract-tables-btn" class="btn btn-success w-100 mt-4">Extract and Collate Tables</button>
+            </div>
+        </div>
 
-<div id="image-results-card" class="card" style="display:none;">
-    <h2>Converted Pages</h2>
-    <p>Select the pages you want to include in the final table.</p>
-    <label><input type="checkbox" id="select-all-pages"> Select All</label>
-    <div id="thumbnail-container" class="thumbnail-container"></div>
-    <button type="button" id="extract-tables-btn" style="margin-top: 15px;">Extract and Collate Tables</button>
-</div>
+        <!-- Step 3: Extraction Progress -->
+        <div id="extraction-progress-card" class="card shadow-sm mb-4" style="display:none;">
+            <div class="card-header d-flex align-items-center">
+                 <span class="badge bg-primary rounded-pill me-3">3</span>
+                 <h5 class="mb-0">Extracting & Collating...</h5>
+            </div>
+            <div class="card-body">
+                <p>Processing page <span id="current-page-num">0</span> of <span id="total-pages-num">0</span></p>
+                <div class="progress" style="height: 25px;">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+                <div class="text-center mt-3">
+                    <div class="spinner-border text-success" id="table-spinner" role="status">
+                        <span class="visually-hidden">Extracting...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<div id="extraction-progress-card" class="card" style="display:none;">
-    <h2>2. Extracting & Collating...</h2>
-    <div id="progress-container">
-        <p>Processing page <span id="current-page-num">0</span> of <span id="total-pages-num">0</span></p>
-        <div style="border: 1px solid #ccc;">
-            <div id="progress-bar">0%</div>
+        <!-- Step 4: Results -->
+        <div id="table-results-container" class="card shadow-sm" style="display:none;">
+             <div class="card-header d-flex align-items-center">
+                <span class="badge bg-primary rounded-pill me-3">4</span>
+                <h5 class="mb-0">Results</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="card-title">Collated Table</h6>
+                <div class="table-responsive">
+                    <table id="collated-table" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+             <div class="card-footer">
+                <h6 class="card-title">Summary</h6>
+                <pre id="summary-output" class="mb-0"></pre>
+            </div>
         </div>
     </div>
-    <div class="spinner" id="table-spinner" style="margin-top: 15px;"></div>
-</div>
 
-<div id="table-results-container" class="card" style="display:none;">
-    <h3>Extraction Results</h3>
-    <h4>Collated Table</h4>
-    <div id="table-result-preview"></div>
-    <h4>Summary</h4>
-    <pre id="summary-output"></pre>
-</div>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- DataTables JS -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
+    <script>
+    $(document).ready(function () {
+        const pdfFileInput = $('#pdf-file');
+        const convertBtn = $('#convert-btn');
+        const pdfSpinner = $('#pdf-spinner');
+        const imageResultsCard = $('#image-results-card');
+        const thumbnailContainer = $('#thumbnail-container');
+        const selectAllCheckbox = $('#select-all-pages');
+        const extractTablesBtn = $('#extract-tables-btn');
+        const extractionProgressCard = $('#extraction-progress-card');
+        const progressBar = $('#progress-bar');
+        const currentPageNum = $('#current-page-num');
+        const totalPagesNum = $('#total-pages-num');
+        const tableSpinner = $('#table-spinner');
+        const tableResultsContainer = $('#table-results-container');
+        const summaryOutput = $('#summary-output');
+        let dt = null;
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const pdfFileInput = document.getElementById('pdf-file');
-    const convertBtn = document.getElementById('convert-btn');
-    const pdfSpinner = document.getElementById('pdf-spinner');
-    const imageResultsCard = document.getElementById('image-results-card');
-    const thumbnailContainer = document.getElementById('thumbnail-container');
-    const selectAllCheckbox = document.getElementById('select-all-pages');
-    const extractTablesBtn = document.getElementById('extract-tables-btn');
-    const extractionProgressCard = document.getElementById('extraction-progress-card');
-    const progressContainer = document.getElementById('progress-container');
-    const progressBar = document.getElementById('progress-bar');
-    const currentPageNum = document.getElementById('current-page-num');
-    const totalPagesNum = document.getElementById('total-pages-num');
-    const tableSpinner = document.getElementById('table-spinner');
-    const tableResultsContainer = document.getElementById('table-results-container');
-    const tableResultPreview = document.getElementById('table-result-preview');
-    const summaryOutput = document.getElementById('summary-output');
-
-    function showAlert(message) { alert(message); }
-
-    function displayThumbnails(imageUrls) {
-        thumbnailContainer.innerHTML = '';
-        imageUrls.forEach((url, i) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'thumbnail-wrapper';
-            wrapper.dataset.imageUrl = url;
-            wrapper.dataset.pageNumber = i + 1;
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'page-checkbox';
-            checkbox.style.position = 'absolute';
-
-            const img = document.createElement('img');
-            img.src = url;
-
-            const pageNum = document.createElement('p');
-            pageNum.textContent = `Page ${i + 1}`;
-
-            wrapper.addEventListener('click', (e) => {
-                if (e.target.type !== 'checkbox') checkbox.checked = !checkbox.checked;
-                wrapper.classList.toggle('selected', checkbox.checked);
-            });
-            
-            wrapper.appendChild(checkbox);
-            wrapper.appendChild(img);
-            wrapper.appendChild(pageNum);
-            thumbnailContainer.appendChild(wrapper);
-        });
-    }
-
-    function calculateSummaryFromHtml(tableHtml) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = tableHtml;
-        const table = tempDiv.querySelector('table');
-        if (!table) return "Summary could not be generated.";
-
-        let totalAmount = 0;
-        const rows = table.querySelectorAll('tbody tr');
-        let amountColumnIndex = -1;
-
-        const headers = table.querySelectorAll('thead th');
-        headers.forEach((th, index) => {
-            if (th.textContent.trim().toLowerCase().includes('amount')) {
-                amountColumnIndex = index;
-            }
-        });
-
-        if (amountColumnIndex === -1) return "Could not find 'Amount' column.";
-
-        rows.forEach(row => {
-            const cell = row.cells[amountColumnIndex];
-            if (cell) {
-                const value = parseFloat(cell.textContent.trim().replace(/,/g, ''));
-                if (!isNaN(value)) totalAmount += value;
-            }
-        });
-
-        return `Total Items: ${rows.length}\nTotal Amount: ${totalAmount.toFixed(2)}`;
-    }
-
-    convertBtn.addEventListener('click', async () => {
-        if (!pdfFileInput.files.length) return showAlert('Please select a PDF file.');
-        const formData = new FormData();
-        formData.append('file', pdfFileInput.files[0]);
-
-        pdfSpinner.style.display = 'inline-block';
-        imageResultsCard.style.display = 'none';
-
-        try {
-            const response = await fetch('/process_pdf', { method: 'POST', body: formData });
-            const data = await response.json();
-
-            if (response.ok && data.image_urls) {
-                displayThumbnails(data.image_urls);
-                imageResultsCard.style.display = 'block';
-            } else {
-                showAlert(data.error || 'PDF to image conversion failed.');
-            }
-        } catch (error) {
-            showAlert('An unexpected error occurred during PDF conversion.');
-        } finally {
-            pdfSpinner.style.display = 'none';
+        function showAlert(message, type = 'danger') {
+            const alertHtml = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                                ${message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                           </div>`;
+            $('.container').prepend(alertHtml);
         }
-    });
 
-    selectAllCheckbox.addEventListener('change', (e) => {
-        document.querySelectorAll('.page-checkbox').forEach(checkbox => {
-            checkbox.checked = e.target.checked;
-            checkbox.parentElement.classList.toggle('selected', checkbox.checked);
-        });
-    });
+        function displayThumbnails(imageUrls) {
+            thumbnailContainer.html('');
+            imageUrls.forEach((url, i) => {
+                const wrapper = $('<div>').addClass('thumbnail-wrapper').data('imageUrl', url).data('pageNumber', i + 1);
+                const checkbox = $('<input>').attr('type', 'checkbox').addClass('page-checkbox form-check-input');
+                const img = $('<img>').attr('src', url);
+                const pageNum = $('<p>').text(`Page ${i + 1}`);
 
-    extractTablesBtn.addEventListener('click', async () => {
-        const selectedWrappers = Array.from(document.querySelectorAll('.thumbnail-wrapper.selected'));
-        if (selectedWrappers.length === 0) return showAlert('Please select at least one page.');
-
-        extractionProgressCard.style.display = 'block';
-        progressContainer.style.display = 'block';
-        tableSpinner.style.display = 'inline-block';
-        tableResultsContainer.style.display = 'none';
-        totalPagesNum.textContent = selectedWrappers.length;
-
-        const allMarkdownResults = [];
-        let processedCount = 0;
-
-        for (const wrapper of selectedWrappers) {
-            processedCount++;
-            currentPageNum.textContent = processedCount;
-            const progress = (processedCount / selectedWrappers.length) * 100;
-            progressBar.style.width = `${progress}%`;
-            progressBar.textContent = `${Math.round(progress)}%`;
-            
-            try {
-                const imageResponse = await fetch(wrapper.dataset.imageUrl);
-                const imageBlob = await imageResponse.blob();
+                wrapper.on('click', (e) => {
+                    if (e.target.type !== 'checkbox') {
+                         checkbox.prop('checked', !checkbox.prop('checked')).trigger('change');
+                    }
+                });
                 
-                const formData = new FormData();
-                formData.append('image', imageBlob, `page_${wrapper.dataset.pageNumber}.png`);
-                formData.append('options', JSON.stringify({ "useTableRecognition": true }));
+                checkbox.on('change', function() {
+                    wrapper.toggleClass('selected', $(this).prop('checked'));
+                });
 
-                const extractResponse = await fetch('/extract_tables', { method: 'POST', body: formData });
-                const data = await extractResponse.json();
+                wrapper.append(checkbox, img, pageNum);
+                thumbnailContainer.append(wrapper);
+            });
+        }
 
-                if (extractResponse.ok && data.markdown_text) {
-                    allMarkdownResults.push(data.markdown_text);
+        function calculateSummary(data, headers) {
+            let totalAmount = 0;
+            const amountColumnIndex = headers.findIndex(h => h.toLowerCase().includes('amount'));
+            if (amountColumnIndex === -1) return "Could not find an 'Amount' column for summary.";
+            
+            data.forEach(row => {
+                const cellValue = row[amountColumnIndex];
+                if (cellValue) {
+                    const value = parseFloat(String(cellValue).trim().replace(/<[^>]*>/g, '').replace(/,/g, ''));
+                    if (!isNaN(value)) totalAmount += value;
+                }
+            });
+            return `Total Items: ${data.length}
+Total Amount: ${totalAmount.toFixed(2)}`;
+        }
+
+        convertBtn.on('click', async () => {
+            if (!pdfFileInput.prop('files').length) return showAlert('Please select a PDF file.');
+            const formData = new FormData();
+            formData.append('file', pdfFileInput.prop('files')[0]);
+            
+            pdfSpinner.show();
+            imageResultsCard.hide();
+
+            try {
+                const response = await fetch('/process_pdf', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (response.ok && data.image_urls) {
+                    displayThumbnails(data.image_urls);
+                    imageResultsCard.show();
+                    imageResultsCard[0].scrollIntoView({ behavior: 'smooth' });
                 } else {
-                    console.warn(`Could not extract table from page ${wrapper.dataset.pageNumber}.`);
+                    showAlert(data.error || 'PDF to image conversion failed.');
                 }
             } catch (error) {
-                console.error(`Error processing page ${wrapper.dataset.pageNumber}:`, error);
+                showAlert('An unexpected error occurred during PDF conversion.');
+            } finally {
+                pdfSpinner.hide();
             }
-        }
+        });
 
-        // Now, send all the markdown to the backend for collation
-        try {
-            const collateResponse = await fetch('/collate_tables', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ markdown_parts: allMarkdownResults })
-            });
-            const collateData = await collateResponse.json();
+        selectAllCheckbox.on('change', function() {
+            const isChecked = $(this).prop('checked');
+            $('.page-checkbox').prop('checked', isChecked).trigger('change');
+        });
 
-            if (collateResponse.ok && collateData.collated_html) {
-                tableResultPreview.innerHTML = collateData.collated_html;
-                summaryOutput.textContent = calculateSummaryFromHtml(collateData.collated_html);
-                tableResultsContainer.style.display = 'block';
-            } else {
-                showAlert(collateData.error || 'Failed to collate tables.');
+        extractTablesBtn.on('click', async () => {
+            const selectedWrappers = $('.thumbnail-wrapper.selected');
+            if (selectedWrappers.length === 0) return showAlert('Please select at least one page to process.');
+
+            const options = {};
+            $('#fine-tuning-options input[type="checkbox"]:checked').each(function() { options[this.name] = true; });
+            const selectedHtmlConversion = $('#fine-tuning-options input[name="htmlConversion"]:checked').val();
+            if(selectedHtmlConversion) options[selectedHtmlConversion] = true;
+
+            extractionProgressCard.show();
+            extractionProgressCard[0].scrollIntoView({ behavior: 'smooth' });
+            tableResultsContainer.hide();
+            totalPagesNum.text(selectedWrappers.length);
+
+            const allHtmlParts = [];
+            const allImageMaps = [];
+            let processedCount = 0;
+
+            for (const wrapper of selectedWrappers.get()) {
+                processedCount++;
+                currentPageNum.text(processedCount);
+                const progress = (processedCount / selectedWrappers.length) * 100;
+                progressBar.css('width', `${progress}%`).attr('aria-valuenow', progress).text(`${Math.round(progress)}%`);
+                
+                try {
+                    const imageResponse = await fetch($(wrapper).data('imageUrl'));
+                    const imageBlob = await imageResponse.blob();
+                    const formData = new FormData();
+                    formData.append('image', imageBlob, `page_${$(wrapper).data('pageNumber')}.png`);
+                    formData.append('options', JSON.stringify(options));
+
+                    const extractResponse = await fetch('/extract_tables', { method: 'POST', body: formData });
+                    const data = await extractResponse.json();
+
+                    if (extractResponse.ok && data.html) {
+                        allHtmlParts.push(data.html);
+                        if (data.images) allImageMaps.push(data.images);
+                    } else {
+                        console.warn(`Could not extract table from page ${$(wrapper).data('pageNumber')}.`);
+                    }
+                } catch (error) {
+                    console.error(`Error processing page ${$(wrapper).data('pageNumber')}:`, error);
+                }
             }
-        } catch (error) {
-             showAlert('An error occurred while collating tables.');
-        } finally {
-            extractionProgressCard.style.display = 'none';
-            tableSpinner.style.display = 'none';
-            tableResultsContainer.scrollIntoView({ behavior: 'smooth' });
-        }
+
+            try {
+                const collateResponse = await fetch('/collate_tables', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ html_parts: allHtmlParts, image_maps: allImageMaps })
+                });
+                const collateData = await collateResponse.json();
+
+                if (collateResponse.ok && collateData.headers && collateData.data) {
+                    if(dt) dt.destroy();
+                    $('#collated-table thead tr').empty();
+                    
+                    collateData.headers.forEach(headerText => {
+                        $('#collated-table thead tr').append($('<th>').text(headerText));
+                    });
+
+                    dt = $('#collated-table').DataTable({
+                        data: collateData.data,
+                        columns: collateData.headers.map(header => ({ "title": header })),
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        responsive: true,
+                        "createdRow": (row, data, dataIndex) => {
+                            data.forEach((cellData, index) => {
+                                $(row).find('td').eq(index).html(cellData);
+                            });
+                        }
+                    });
+
+                    summaryOutput.text(calculateSummary(collateData.data, collateData.headers));
+                    tableResultsContainer.show();
+                    tableResultsContainer[0].scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showAlert(collateData.error || 'Failed to collate tables.', 'warning');
+                }
+            } catch (error) {
+                 showAlert('An error occurred while collating tables.', 'danger');
+            } finally {
+                extractionProgressCard.hide();
+            }
+        });
     });
-});
-</script>
+    </script>
+</body>
+</html>

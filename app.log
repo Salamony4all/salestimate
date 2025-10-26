@@ -822,3 +822,126 @@ requests.exceptions.MissingSchema: Invalid URL '<your url>': No scheme supplied.
 2025-10-26 08:48:44,613 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
 2025-10-26 08:48:45,083 WARNING:  * Debugger is active! [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
 2025-10-26 08:48:45,089 INFO:  * Debugger PIN: 381-039-347 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:52:48,767 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:52:48,767 INFO: [33mPress CTRL+C to quit[0m [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:52:48,778 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:52:49,204 WARNING:  * Debugger is active! [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:52:49,211 INFO:  * Debugger PIN: 381-039-347 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:59:47,564 INFO: 127.0.0.1 - - [26/Oct/2025 08:59:47] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:59:54,090 INFO: Starting PDF to image conversion. [in /home/user/salestimate/pdf_processing.py:12]
+2025-10-26 08:59:56,397 INFO: Successfully converted and saved page 1 to imgs/page_1.png. [in /home/user/salestimate/pdf_processing.py:34]
+2025-10-26 08:59:57,368 INFO: Successfully converted and saved page 2 to imgs/page_2.png. [in /home/user/salestimate/pdf_processing.py:34]
+2025-10-26 08:59:58,481 INFO: Successfully converted and saved page 3 to imgs/page_3.png. [in /home/user/salestimate/pdf_processing.py:34]
+2025-10-26 08:59:59,220 INFO: Successfully converted and saved page 4 to imgs/page_4.png. [in /home/user/salestimate/pdf_processing.py:34]
+2025-10-26 08:59:59,247 INFO: 127.0.0.1 - - [26/Oct/2025 08:59:59] "POST /process_pdf HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:59:59,489 INFO: 127.0.0.1 - - [26/Oct/2025 08:59:59] "GET /imgs/page_2.png HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:59:59,492 INFO: 127.0.0.1 - - [26/Oct/2025 08:59:59] "GET /imgs/page_1.png HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 08:59:59,508 INFO: 127.0.0.1 - - [26/Oct/2025 08:59:59] "GET /imgs/page_3.png HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:00:00,235 INFO: 127.0.0.1 - - [26/Oct/2025 09:00:00] "GET /imgs/page_4.png HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:00:20,428 INFO: 127.0.0.1 - - [26/Oct/2025 09:00:20] "[36mGET /imgs/page_1.png HTTP/1.1[0m" 304 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:04:34,181 INFO: 127.0.0.1 - - [26/Oct/2025 09:04:34] "[36mGET /imgs/page_1.png HTTP/1.1[0m" 304 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:04:36,137 INFO: Sending image to Table Recognition API with options: {'useTableRecognition': True} [in /home/user/salestimate/table_recognition.py:12]
+2025-10-26 09:04:54,452 INFO: Successfully received response from Table Recognition API. [in /home/user/salestimate/table_recognition.py:35]
+2025-10-26 09:04:54,464 INFO: 127.0.0.1 - - [26/Oct/2025 09:04:54] "POST /extract_tables HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:04:54,644 INFO: 127.0.0.1 - - [26/Oct/2025 09:04:54] "[36mGET /imgs/page_2.png HTTP/1.1[0m" 304 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:04:55,245 INFO: Sending image to Table Recognition API with options: {'useTableRecognition': True} [in /home/user/salestimate/table_recognition.py:12]
+2025-10-26 09:05:11,207 INFO: Successfully received response from Table Recognition API. [in /home/user/salestimate/table_recognition.py:35]
+2025-10-26 09:05:11,229 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:11] "POST /extract_tables HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:12,128 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:12] "[36mGET /imgs/page_3.png HTTP/1.1[0m" 304 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:13,235 INFO: Sending image to Table Recognition API with options: {'useTableRecognition': True} [in /home/user/salestimate/table_recognition.py:12]
+2025-10-26 09:05:29,780 INFO: Successfully received response from Table Recognition API. [in /home/user/salestimate/table_recognition.py:35]
+2025-10-26 09:05:29,793 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:29] "POST /extract_tables HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:29,982 INFO: Received 3 HTML parts for collation. [in /home/user/salestimate/main.py:105]
+2025-10-26 09:05:29,985 INFO: Processing HTML part: &yliall &Ll ALSHAYA ENTERPRISES 
+
+Date:Tuesday, July 22, 2025
+
+Ref :ASE-QTN-0MN-RC -MAS-2025-07-R0
+
+Project:SI.No Supply&Installationof furniture for DHOFARrehabilitation center 
+
+
+
+
+<div style="text-align: center;"><html><body><table border="1"><tr><td rowspan="2">Supply&Installationof furniture for DHOFARrehabilitation center SI.No Img .Ref</td><td colspan="5">Item Description</td></tr><tr><td>RAKHYUT</td><td></td><td></td><td>Qty</td><td>Unit Rate Amount Unit (OMR) (OMR)</td></tr><tr><td>LOCAL-UAE <div style="text-align: center;"><img src="imgs/img_in_image_box_376_776_651_1022.jpg" alt="Image" /></div></td><td>The non-skid textured & shock-absorbing</td><td></td><td></td><td>100 Nos.</td><td>41.00 4,100.00</td></tr><tr><td>1 LOCAL-UAE 2 <div style="text-align: center;"><img src="imgs/img_in_image_box_325_1100_620_1238.jpg" alt="Image" /></div></td><td>surface Rubber flooring RECTANGULAR DINING TABLE - 6PAX top 25mm mdf melamine finish with 4x4 paint finish metal legs size 180x120x75cm H 6 chairs considerd fpr single table</td><td></td><td></td><td>2 Nos.</td><td>465.00 930.00</td></tr><tr><td></td><td>TERMINAL THREE SEATER UPHOLSTERED:</td><td></td><td></td><td>2</td><td>136.00 272.00</td></tr><tr><td>LOCAL-UAE 3 FAR EAST <div style="text-align: center;"><img src="imgs/img_in_image_box_313_1497_669_1748.jpg" alt="Image" /></div></td><td>chrome, steal painted beam thickness 1.5mm Size:L238 x D68 X H</td><td></td><td>Perforated powder coated metal seat & back 1.4mm thickness and legs 1.2mm steel</td><td>Nos.</td><td>780.00</td></tr><tr><td>4 FAR EAST <div style="text-align: center;"><img src="imgs/img_in_image_box_388_1830_552_2080.jpg" alt="Image" /></div></td><td>WIND HIGH BACK CHAIR STOOL (N):</td><td>Back mesh and seat upholsered with adjustable armrest and nylon base with wheels considerate craftsmanship matcheswith modern shaping concepts. Size : 65 Wx 55 Dx113 Hcm +/- Upholstered seat, tilting mechanism, chrome</td><td></td><td>10 Nos.</td><td>78.00 68.00</td></tr><tr><td>天 5 <div style="text-align: center;"><img src="imgs/img_in_image_box_362_2202_540_2436.jpg" alt="Image" /></div></td><td>footring and nylon base size: seat dia 32x H85</td><td></td><td></td><td>2 Nos.</td><td>34.00</td></tr><tr><td>LOCAL-UAE 6 <div style="text-align: center;"><img src="imgs/img_in_image_box_272_2575_633_2838.jpg" alt="Image" /></div></td><td>MOBILITY DESK ONLY ELECTRIC HEIGHT ADJUSTABLE LEGS dim: W 1600 x D 800 x H 710/1200mm Table top : 18mm mdf Finish : Melamine / Dual Motor Max. Load Capacity :220lbs/100kg Speed: 32mm/s / Power Type: 100V- 240 V **Without mobile pedestal</td><td></td><td>Stroke: 19.3"/490mm / Decibel: <50dB Height Range : 28.0"-47.2"/710-120 0mm</td><td>7 Nos.</td><td>352.00 2,464.00</td></tr></tbody></table></body></html></div>
+ [in /home/user/salestimate/main.py:63]
+2025-10-26 09:05:30,006 INFO: Processing HTML part: eyliall &Lül ALSHAYA ENTERPRISES 
+
+Date:Tuesday, July 22, 2025
+
+Ref :ASE-QTN-0MN-RC -MAS-2025-07-R0
+
+Project:Supply&Installatiooffurniture forDHOFARrehabilitationcenter 
+
+SI.No 
+
+
+
+
+<div style="text-align: center;"><html><body><table border="1"><tr><td rowspan="2">SI.No Img .Ref LOCAL-UAE</td><td colspan="6">Supply&Installatiooffurniture forDHOFARrehabilitationcenter</td></tr><tr><td>RAKHYUT</td><td></td><td>Item Description</td><td></td><td>Qty</td><td>Unit Rate Amount Unit (OMR) (OMR)</td></tr><tr><td colspan="6">6</td></tr><tr><td>7 LOCAL-UAE <div style="text-align: center;"><img src="imgs/img_in_image_box_334_823_620_1066.jpg" alt="Image" /></div></td><td>(as per image) full wood</td><td>OPEN STORAGE SHELVES DIM 160x40x80cm H - 3rows/4col OPEN STORAGE SHELVES DIM 160x40x80cmH - 3rows/4col</td><td>full wood - 18mm mdf melamine finish</td><td></td><td>Nos. 151.00 906.00</td></tr><tr><td>8 M LOCAL-UAE <div style="text-align: center;"><img src="imgs/img_in_image_box_354_1180_633_1452.jpg" alt="Image" /></div></td><td></td><td></td><td></td><td></td><td>Nos.</td></tr><tr><td></td><td></td><td>- 18mm mdf melamine finish</td><td></td><td>5 2</td><td>181.00 905.00 604.00</td></tr><tr><td>9 10 <div style="text-align: center;"><img src="imgs/img_in_image_box_342_1568_606_1830.jpg" alt="Image" /></div></td><td>Metal storage cabinet 3 drawe cabinet Hanging tool storage shelves</td><td></td><td></td><td>4</td><td>Nos. 302.00 Require more Nos. 一 details</td></tr><tr><td>DOGUS -TURKEY 11 <div style="text-align: center;"><img src="imgs/img_in_image_box_330_2128_556_2336.jpg" alt="Image" /></div></td><td>Laminate top in wooden base</td><td></td><td></td><td>10 Nos.</td><td>129.00 1,290.00</td></tr><tr><td>DOGUS -TURKEY 12 <div style="text-align: center;"><img src="imgs/img_in_image_box_343_2471_579_2660.jpg" alt="Image" /></div></td><td></td><td>Laminate top in wooden base</td><td></td><td></td><td></td></tr><tr><td>DOGUS -TURKEY 13 <div style="text-align: center;"><img src="imgs/img_in_image_box_300_2831_577_3003.jpg" alt="Image" /></div></td><td>Small kids table Laminated top Metal base</td><td></td><td>4</td><td>7 Nos. Nos.</td><td>86.00 602.00 204.00 816.00</td></tr></tbody></table></body></html></div>
+ [in /home/user/salestimate/main.py:63]
+2025-10-26 09:05:30,032 INFO: Processing HTML part: ejliall Ll ALSHAYA ENTERPRISES 
+
+Date:Tuesday, July 22, 2025Ref :ASE-QTN-0MN-RC -MAS-2025-07-R0Project:Supply & Installation of furniture for DHOFAR rehabilitation center 
+
+
+<div style="text-align: center;"><html><body><table border="1"><tbody><tr><td rowspan="2">Supply & Installation of furniture for DHOFAR rehabilitation center SI.No Img .Ref</td><td colspan="5"></td></tr><tr><td></td><td>Item Description</td><td></td><td>Qty</td><td>Unit Unit Rate (OMR)</td></tr><tr><td>DOGUS -TURKEY 14</td><td></td><td>RAKHYUT PP seat and back</td><td></td><td>Nos.</td><td>Amount (OMR) 38.00 152.00</td></tr><tr><td>DOGUS -TURKEY 15 <div style="text-align: center;"><img src="imgs/img_in_image_box_407_824_552_986.jpg" alt="Image" /></div></td><td>Metal base leg PP seat and back PU padded seats</td><td></td><td></td><td>4 7</td><td>17.00 119.00</td></tr><tr><td>DOGUS -TURKEY <div style="text-align: center;"><img src="imgs/img_in_image_box_364_1101_558_1318.jpg" alt="Image" /></div></td><td>PP seat and back</td><td></td><td></td><td>Nos.</td><td>170.00</td></tr><tr><td>16 LOCAL-UAE <div style="text-align: center;"><img src="imgs/img_in_image_box_364_1402_549_1621.jpg" alt="Image" /></div></td><td>PU padded seats</td><td></td><td></td><td>10 Nos.</td><td>17.00 906.00</td></tr><tr><td>17 LOCAL-UAE <div style="text-align: center;"><img src="imgs/img_in_image_box_309_1731_595_1967.jpg" alt="Image" /></div></td><td></td><td>Customised wooden chair Upholistred seat and back</td><td></td><td>3 Nos.</td><td>302.00 966.00</td></tr><tr><td>日 18 <div style="text-align: center;"><img src="imgs/img_in_image_box_368_2066_542_2311.jpg" alt="Image" /></div></td><td>size 80x40x200cm H</td><td>HIGH CABINET - 2Doors 18mm mdf melamine finish - with shelves with panel swing doors - 6mm backply</td><td></td><td>6 Nos.</td><td>161.00</td></tr><tr><td>LOCAL-UAE 19 <div style="text-align: center;"><img src="imgs/img_in_image_box_306_2416_577_2692.jpg" alt="Image" /></div></td><td>Color,120 * 30cm)</td><td>Closeable Sliding Full-Length Mirror, Living</td><td></td><td>4 Nos.</td><td>1,048.00</td></tr><tr><td colspan="2"></td><td>Room Home Entrance Dressing Mirror, Wall- Mounted Full-Length Mirror with Hook(Wood</td><td></td><td></td><td>262.00 TOTAL VALUE IN OMR 17,098.00 VAT 5% 854.90 TOTAL VALUE INCLUDING VAT (OMR) 17,952.90</td></tr></tbody></table></body></html></div>
+
+
+TERMS & CONDITIONS:Prices : Prices quoted are inclusive of Shipping & VAT 5% and based on the current rates and duties for material delivered to  [in /home/user/salestimate/main.py:63]
+2025-10-26 09:05:30,057 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:30] "POST /collate_tables HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:30,605 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:30] "[33mGET /imgs/img_in_image_box_376_776_651_1022.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:30,628 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:30] "[33mGET /imgs/img_in_image_box_325_1100_620_1238.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:30,630 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:30] "[33mGET /imgs/img_in_image_box_313_1497_669_1748.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:30,833 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:30] "[33mGET /imgs/img_in_image_box_388_1830_552_2080.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,208 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_272_2575_633_2838.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,214 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_334_823_620_1066.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,217 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_362_2202_540_2436.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,421 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_354_1180_633_1452.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,585 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_342_1568_606_1830.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,610 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_330_2128_556_2336.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,932 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_300_2831_577_3003.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,937 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_343_2471_579_2660.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:31,951 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:31] "[33mGET /imgs/img_in_image_box_407_824_552_986.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:32,129 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:32] "[33mGET /imgs/img_in_image_box_364_1101_558_1318.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:32,357 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:32] "[33mGET /imgs/img_in_image_box_364_1402_549_1621.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:32,392 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:32] "[33mGET /imgs/img_in_image_box_309_1731_595_1967.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:32,397 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:32] "[33mGET /imgs/img_in_image_box_368_2066_542_2311.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:05:32,566 INFO: 127.0.0.1 - - [26/Oct/2025 09:05:32] "[33mGET /imgs/img_in_image_box_306_2416_577_2692.jpg HTTP/1.1[0m" 404 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 09:07:55,301 INFO: 127.0.0.1 - - [26/Oct/2025 09:07:55] "[36mGET /imgs/page_1.png HTTP/1.1[0m" 304 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:32:18,053 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:32:18,096 INFO: [33mPress CTRL+C to quit[0m [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:32:18,307 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:32:19,850 WARNING:  * Debugger is active! [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:32:19,884 INFO:  * Debugger PIN: 129-775-653 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:32:29,347 INFO: 127.0.0.1 - - [26/Oct/2025 20:32:29] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:47:42,194 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:47:42,200 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:47:42,206 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:47:43,145 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:47:44,152 WARNING:  * Debugger is active! [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 20:47:44,171 INFO:  * Debugger PIN: 129-775-653 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:08:58,609 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:08:58,685 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:08:58,686 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:08:58,957 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:08:59,743 WARNING:  * Debugger is active! [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:08:59,760 INFO:  * Debugger PIN: 129-775-653 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:17:52,932 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:17:52,939 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:17:53,551 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:17:54,467 WARNING:  * Debugger is active! [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:17:54,473 INFO:  * Debugger PIN: 129-775-653 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:37:32,390 INFO: 127.0.0.1 - - [26/Oct/2025 21:37:32] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 21:37:32,787 INFO: 127.0.0.1 - - [26/Oct/2025 21:37:32] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:32,023 INFO: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:32,076 INFO: [33mPress CTRL+C to quit[0m [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:32,110 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:32,975 WARNING:  * Debugger is active! [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:33,066 INFO:  * Debugger PIN: 124-860-373 [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:45,257 INFO: 127.0.0.1 - - [26/Oct/2025 22:12:45] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:45,441 INFO: 127.0.0.1 - - [26/Oct/2025 22:12:45] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:12:45,625 INFO: 127.0.0.1 - - [26/Oct/2025 22:12:45] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
