@@ -945,3 +945,6 @@ TERMS & CONDITIONS:Prices : Prices quoted are inclusive of Shipping & VAT 5% and
 2025-10-26 22:12:45,257 INFO: 127.0.0.1 - - [26/Oct/2025 22:12:45] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
 2025-10-26 22:12:45,441 INFO: 127.0.0.1 - - [26/Oct/2025 22:12:45] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
 2025-10-26 22:12:45,625 INFO: 127.0.0.1 - - [26/Oct/2025 22:12:45] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:27:52,470 INFO: 127.0.0.1 - - [26/Oct/2025 22:27:52] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:28:35,157 INFO: 127.0.0.1 - - [26/Oct/2025 22:28:35] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:28:35,695 INFO: 127.0.0.1 - - [26/Oct/2025 22:28:35] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
