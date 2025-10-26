@@ -948,3 +948,8 @@ TERMS & CONDITIONS:Prices : Prices quoted are inclusive of Shipping & VAT 5% and
 2025-10-26 22:27:52,470 INFO: 127.0.0.1 - - [26/Oct/2025 22:27:52] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
 2025-10-26 22:28:35,157 INFO: 127.0.0.1 - - [26/Oct/2025 22:28:35] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
 2025-10-26 22:28:35,695 INFO: 127.0.0.1 - - [26/Oct/2025 22:28:35] "GET / HTTP/1.1" 200 - [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:49:56,778 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:49:56,784 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:49:56,793 INFO:  * Detected change in '/home/user/salestimate/main.py', reloading [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:49:57,310 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
+2025-10-26 22:50:53,512 INFO:  * Restarting with watchdog (inotify) [in /home/user/salestimate/.venv/lib/python3.11/site-packages/werkzeug/_internal.py:97]
