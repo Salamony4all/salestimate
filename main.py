@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import logging
 from logging.handlers import RotatingFileHandler
 from pdf_processing import convert_pdf_to_images
@@ -7,6 +7,8 @@ from table_recognition import extract_table_from_image
 import json
 from dotenv import load_dotenv
 import markdown
+from bs4 import BeautifulSoup
+import os
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,6 +30,10 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/imgs/<path:filename>')
+def serve_img(filename):
+    return send_from_directory('imgs', filename)
+
 @app.route('/process_pdf', methods=['POST'])
 def process_pdf_route():
     if 'file' not in request.files:
@@ -38,74 +44,56 @@ def process_pdf_route():
     if file:
         try:
             file_bytes = file.read()
-            result = convert_pdf_to_images(file_bytes)
-            return jsonify(result)
+            #This function already returns a dict with the correct key
+            image_urls = convert_pdf_to_images(file_bytes)
+            return jsonify(image_urls)
         except Exception as e:
             logging.critical("Unhandled exception in /process_pdf: %s", e, exc_info=True)
             return jsonify({'error': 'An unexpected error occurred.'}), 500
 
-def collate_markdown_tables(markdown_parts):
+def collate_tables(html_parts):
     """
-    Cleans and collates multiple markdown tables into a single continuous table.
-    It removes non-table text and duplicate headers, preserving row order.
+    Cleans and collates multiple HTML tables into a single continuous HTML table.
     """
     final_header = None
-    final_separator = None
-    final_body_rows = [] # Use a list to preserve order
+    all_body_rows = []
+    header_texts = []
 
-    for md_part in markdown_parts:
-        if not md_part or not md_part.strip():
+    for html_part in html_parts:
+        logging.info(f"Processing HTML part: {html_part}")
+        if not html_part or not html_part.strip():
             continue
 
-        lines = [line.strip() for line in md_part.strip().split('\n')]
-        
-        # Find the table structure (header, separator, and body) in this part
-        header_candidate = None
-        separator_candidate_index = -1
+        soup = BeautifulSoup(html_part, 'html.parser')
+        tables = soup.find_all('table')
 
-        for i, line in enumerate(lines):
-            is_separator = '|' in line and all(c in '|-: ' for c in line)
-            if is_separator and i > 0 and '|' in lines[i-1]:
-                # Found a potential table
-                header_candidate = lines[i-1]
-                separator_candidate_index = i
+        for table in tables:
+            rows = table.find_all('tr')
+            for i, row in enumerate(rows):
+                is_header_or_separator = False
+                cols = row.find_all(['th', 'td'])
+                current_row_texts = [ele.text.strip().lower() for ele in cols]
                 
-                # Use the first valid table's header and separator
-                if final_header is None:
-                    final_header = header_candidate
-                    final_separator = lines[separator_candidate_index]
-
-                # Process the body rows of THIS table
-                for body_line in lines[separator_candidate_index + 1:]:
-                    # A valid body row must contain '|'
-                    if '|' not in body_line:
-                        continue
-                    
-                    # It must not be another separator line
-                    is_another_separator = all(c in '|-: ' for c in body_line)
-                    if is_another_separator:
-                        continue
-                        
-                    # It must not be a duplicate of the main header
-                    # Compare content without whitespace and in lowercase
-                    row_content = "".join(body_line.lower().split())
-                    header_content = "".join(final_header.lower().split())
-                    if row_content == header_content:
-                        continue
-
-                    # Add the row if it's not already in our final list
-                    if body_line not in final_body_rows:
-                        final_body_rows.append(body_line)
+                if current_row_texts in header_texts and len(header_texts) > 0:
+                    is_header_or_separator = True
                 
-                # Since we found and processed the table in this part, we can stop searching this part
-                break
+                if final_header is None and i == 0:
+                    final_header = row
+                    header_texts.append([ele.text.strip().lower() for ele in final_header.find_all(['th', 'td'])])
+                    is_header_or_separator = True
 
+                if not is_header_or_separator:
+                    all_body_rows.append(row)
+    
     if final_header is None:
         return ""
 
-    # Reconstruct the full, clean markdown table string
-    return '\n'.join([final_header, final_separator] + final_body_rows)
+    new_table = BeautifulSoup('<table border="1"></table>', 'html.parser')
+    new_table.table.append(final_header)
+    for body_row in all_body_rows:
+        new_table.table.append(body_row)
 
+    return str(new_table)
 
 @app.route('/collate_tables', methods=['POST'])
 def collate_tables_route():
@@ -113,17 +101,16 @@ def collate_tables_route():
     if not data or 'markdown_parts' not in data:
         return jsonify({'error': 'Invalid request. Missing markdown_parts.'}), 400
 
-    markdown_parts = data['markdown_parts']
-    logging.info(f"Received {len(markdown_parts)} markdown parts for collation.")
+    html_parts = data['markdown_parts']
+    logging.info(f"Received {len(html_parts)} HTML parts for collation.")
     
     try:
-        collated_md = collate_markdown_tables(markdown_parts)
-        if not collated_md:
-            logging.error("collate_markdown_tables returned an empty string. This can happen if no valid tables are found in the selected pages.")
+        collated_html = collate_tables(html_parts)
+        
+        if not collated_html:
+            logging.error("collate_tables returned an empty string. This can happen if no valid tables are found.")
             return jsonify({'error': 'Could not find any valid tables to collate in the selected pages.'}), 400
 
-        collated_html = markdown.markdown(collated_md, extensions=['tables'])
-        
         return jsonify({'collated_html': collated_html})
     except Exception as e:
         logging.error(f"Error during table collation: {e}", exc_info=True)
@@ -153,10 +140,8 @@ def extract_tables_route():
                 markdown_text = first_result['markdown']['text']
                 return jsonify({'markdown_text': markdown_text}) 
             else:
-                # This is a valid case if the page has no tables
                 return jsonify({'markdown_text': ''})
         else:
-            # Also a valid case for no tables
             return jsonify({'markdown_text': ''})
 
     except json.JSONDecodeError:
